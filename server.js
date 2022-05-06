@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 var cors = require('cors');
 
-
+//import Routes
+const userRoute = require('./Routes/userRoute');
 
 
 dotenv.config();
@@ -23,6 +24,8 @@ mongoose.connect(process.env.MONGO_URL, {
   .catch((err) => console.log(err));
 
 
+// //Routes Middleware
+app.use('/api/user', userRoute);
 
 
 const PORT = process.env.PORT || 5000
