@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const User = require('../models/userModel');
+const User = require('../Models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const request = require('request');
 const _ = require("lodash");
 const { result } = require('lodash');
 const dotenv = require("dotenv");
-const { verifyTokenAndAuthorization, verifyTokenUser, verifyTokenAndAdmin, verifyToken } = require("../verifyToken");
+const { verifyTokenAndAuthorization, verifyTokenUser, verifyTokenAndAdmin, verifyToken } = require("../Authentication/verifyToken");
 
 
 dotenv.config();
