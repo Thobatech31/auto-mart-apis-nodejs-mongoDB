@@ -31,8 +31,6 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
 
   if (!desc) return res.status(401).json({ msg: "Desc Field is Empty" })
 
-  // if (!img) return res.status(401).json({ msg: "Image Field is Empty" })
-
   if (!model_name) return res.status(401).json({ msg: "Model Name Field is Empty" })
 
   if (!model_year) return res.status(401).json({ msg: "Model Year Field is Empty" })
@@ -41,9 +39,7 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
 
   if (!price) return res.status(401).json({ msg: "Price Field is Empty" })
 
-
   const user = req.user;
-  console.log("FILENAME", req.file);
   try {
     const savedCar = await Car.create({
       userId: user.id,
