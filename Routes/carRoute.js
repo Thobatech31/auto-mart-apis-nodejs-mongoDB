@@ -25,9 +25,9 @@ const upload = multer({
 //Create
 router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req, res) => {
 
-  const { title, desc, image, model_name, model_year, color, price } = req.body;
-  if (!title)
-    return res.status(401).json({ msg: "Title Field is Empty" });
+  const { car_name, desc, image, model_name, model_year, color, price } = req.body;
+  if (!car_name)
+    return res.status(401).json({ msg: "Car Name Field is Empty" });
 
   if (!desc) return res.status(401).json({ msg: "Desc Field is Empty" })
 
@@ -43,7 +43,7 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
   try {
     const savedCar = await Car.create({
       userId: user.id,
-      title,
+      car_name,
       desc,
       model_name,
       model_year,
@@ -54,7 +54,7 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
     return res.status(200).json({
       status: {
         code: 100,
-        msg: "Car Posted Successfully"
+        msg: "Car Posted Created Successfully"
       },
       data: savedCar,
     })
