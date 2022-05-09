@@ -18,20 +18,18 @@ const storage = multer.diskStorage({
 //upload parameter for multer
 const upload = multer({
   storage: storage,
-  limits:{
+  limits: {
     fileSize: 1000000
   }
 });
 //Create
 router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req, res) => {
 
-  const { title, desc, img, model_name, model_year, color, price } = req.body;
-  if (!title)
-    return res.status(401).json({ msg: "Title Field is Empty" });
+  const { car_name, desc, image, model_name, model_year, color, price } = req.body;
+  if (!car_name)
+    return res.status(401).json({ msg: "Car Name Field is Empty" });
 
   if (!desc) return res.status(401).json({ msg: "Desc Field is Empty" })
-
-  // if (!img) return res.status(401).json({ msg: "Image Field is Empty" })
 
   if (!model_name) return res.status(401).json({ msg: "Model Name Field is Empty" })
 
@@ -41,24 +39,22 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
 
   if (!price) return res.status(401).json({ msg: "Price Field is Empty" })
 
-
   const user = req.user;
-  console.log("FILENAME", req.file);
   try {
     const savedCar = await Car.create({
       userId: user.id,
-      title,
+      car_name,
       desc,
       model_name,
       model_year,
       color,
       price,
-      img: req.file.filename
+      image: req.file.filename
     })
     return res.status(200).json({
       status: {
         code: 100,
-        msg: "Car Posted Successfully"
+        msg: "Car Posted Created Successfully"
       },
       data: savedCar,
     })

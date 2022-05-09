@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const CarSchema = new mongoose.Schema(
   {
-    title: {
+    car_name: {
       type: String,
       required: true,
       unique: true,
@@ -12,7 +12,7 @@ const CarSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    img: {
+    image: {
       type: String,
       required: true,
     },
@@ -29,7 +29,7 @@ const CarSchema = new mongoose.Schema(
       required: true,
     },
     price: {
-      type: String,
+      type: Number,
       required: true,
     },
     userId: {
