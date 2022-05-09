@@ -18,14 +18,14 @@ const storage = multer.diskStorage({
 //upload parameter for multer
 const upload = multer({
   storage: storage,
-  limits:{
+  limits: {
     fileSize: 1000000
   }
 });
 //Create
-router.post("/", verifyTokenAndAuthorization, async (req, res) => {
+router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req, res) => {
 
-  const { title, desc, img, model_name, model_year, color, price } = req.body;
+  const { title, desc, image, model_name, model_year, color, price } = req.body;
   if (!title)
     return res.status(401).json({ msg: "Title Field is Empty" });
 
@@ -49,6 +49,7 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
       model_year,
       color,
       price,
+      image: req.file.filename
     })
     return res.status(200).json({
       status: {
