@@ -49,7 +49,6 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
       model_year,
       color,
       price,
-      img: req.file.filename
     })
     return res.status(200).json({
       status: {
