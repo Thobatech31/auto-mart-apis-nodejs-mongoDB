@@ -23,7 +23,7 @@ const upload = multer({
   }
 });
 //Create
-router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req, res) => {
+router.post("/", verifyTokenAndAuthorization, async (req, res) => {
 
   const { title, desc, img, model_name, model_year, color, price } = req.body;
   if (!title)
