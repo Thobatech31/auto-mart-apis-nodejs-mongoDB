@@ -98,14 +98,15 @@ router.post("/cloudinary", verifyTokenAndAuthorization, async (req, res) => {
           model_year,
           color,
           price,
-          image: result
+          image: result.url
         })
+
         return res.status(200).json({
           status: {
             code: 100,
             msg: "Car Posted Created Successfully"
           },
-          data: savedCar,
+          data: result.url,
         })
 
       }).catch((error) => {

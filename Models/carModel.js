@@ -13,7 +13,7 @@ const CarSchema = new mongoose.Schema(
       required: true,
     },
     image: {
-      type: Object,
+      type: String,
       required: true,
     },
     model_name: {
