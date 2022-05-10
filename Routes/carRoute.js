@@ -3,6 +3,7 @@ const Car = require("../Models/carModel");
 const { verifyTokenUser, verifyTokenAndAuthorization } = require("../Authentication/verifyToken");
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require("../utils/cloudinary")
 
 //Defining Storage for the images
 
@@ -63,6 +64,60 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
   }
 
 })
+
+
+//Create With Cloudinary
+router.post("/cloudinary", upload.single('image'), verifyTokenAndAuthorization, async (req, res) => {
+
+  const { car_name, desc, image, model_name, model_year, color, price } = req.body;
+  if (!car_name)
+    return res.status(401).json({ msg: "Car Name Field is Empty" });
+
+  if (!desc) return res.status(401).json({ msg: "Desc Field is Empty" })
+
+  if (!model_name) return res.status(401).json({ msg: "Model Name Field is Empty" })
+
+  if (!model_year) return res.status(401).json({ msg: "Model Year Field is Empty" })
+
+  if (!color) return res.status(401).json({ msg: "Color Field is Empty" })
+
+  if (!price) return res.status(401).json({ msg: "Price Field is Empty" })
+
+
+  const user = req.user;
+  try {
+    if(image){
+      const uploadRes = await cloudinary.uploader.upload(image, {
+        upload_preset: "autoMartCarPost"
+      })
+
+      if (uploadRes){
+        const savedCar = await Car.create({
+          userId: user.id,
+          car_name,
+          desc,
+          model_name,
+          model_year,
+          color,
+          price,
+          image: uploadRes
+        })
+        return res.status(200).json({
+          status: {
+            code: 100,
+            msg: "Car Posted Created Successfully"
+          },
+          data: savedCar,
+        })
+      }
+    }
+ 
+  } catch (err) {
+    return res.status(500).json({ msg: err })
+  }
+
+})
+
 
 //UPDATE Car Post
 router.put("/:id", verifyTokenUser, async (req, res) => {
