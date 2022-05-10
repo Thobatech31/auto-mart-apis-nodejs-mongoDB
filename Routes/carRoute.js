@@ -67,32 +67,38 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
 
 
 //Create With Cloudinary
-router.post("/cloudinary", upload.single('image'), verifyTokenAndAuthorization, async (req, res) => {
+router.post("/cloudinary", verifyTokenAndAuthorization, async (req, res) => {
+
 
   const { car_name, desc, image, model_name, model_year, color, price } = req.body;
-  if (!car_name)
-    return res.status(401).json({ msg: "Car Name Field is Empty" });
-
-  if (!desc) return res.status(401).json({ msg: "Desc Field is Empty" })
-
-  if (!model_name) return res.status(401).json({ msg: "Model Name Field is Empty" })
-
-  if (!model_year) return res.status(401).json({ msg: "Model Year Field is Empty" })
-
-  if (!color) return res.status(401).json({ msg: "Color Field is Empty" })
-
-  if (!price) return res.status(401).json({ msg: "Price Field is Empty" })
+  // if (!car_name)
+  //   return res.status(401).json({ msg: "Car Name Field is Empty" });
+  //
+  // if (!desc) return res.status(401).json({ msg: "Desc Field is Empty" })
+  //
+  // if (!model_name) return res.status(401).json({ msg: "Model Name Field is Empty" })
+  //
+  // if (!model_year) return res.status(401).json({ msg: "Model Year Field is Empty" })
+  //
+  // if (!color) return res.status(401).json({ msg: "Color Field is Empty" })
+  //
+  // if (!price) return res.status(401).json({ msg: "Price Field is Empty" })
 
 
   const user = req.user;
   try {
+    console.log("jkdfsjkdjkdfsjsdjsdjksdjksdjksd")
     if(image){
+      console.log(image)
+
       const uploadRes = await cloudinary.uploader.upload(image, {
         upload_preset: "autoMartCarPost"
       })
 
+      console.log(uploadRes)
+
       if (uploadRes){
-        const savedCar = await Car.create({
+        const savedCar = new Car({
           userId: user.id,
           car_name,
           desc,
@@ -102,13 +108,15 @@ router.post("/cloudinary", upload.single('image'), verifyTokenAndAuthorization, 
           price,
           image: uploadRes
         })
+
+       const savedCars = await savedCar.save();
         return res.status(200).json({
           status: {
             code: 100,
             msg: "Car Posted Created Successfully"
           },
-          data: savedCar,
-        })
+          data:savedCars
+        });
       }
     }
  
