@@ -17,10 +17,10 @@ const storage = multer.diskStorage({
 
 //upload parameter for multer
 const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1000000
-  }
+  storage: storage
+  // limits: {
+  //   fileSize: 1000000
+  // }
 });
 //Create
 router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req, res) => {
