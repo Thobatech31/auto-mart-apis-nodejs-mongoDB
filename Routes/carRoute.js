@@ -79,7 +79,7 @@ router.post("/cloudinary", verifyTokenAndAuthorization, async (req, res) => {
   const user = req.user;
 
   try{
-     const datas = await cloudinary.uploader.upload(image, {
+     const data = await cloudinary.uploader.upload(image, {
       upload_preset: "car_mart",
       allowed_formats : ['png', 'jpg', 'svg', 'ico', 'jfif', 'web']
      });
@@ -92,7 +92,7 @@ router.post("/cloudinary", verifyTokenAndAuthorization, async (req, res) => {
              model_year,
              color,
              price,
-             image: datas.url
+             image: data.url
        });
        const savedCar = await car.save();
          return res.status(200).json({
