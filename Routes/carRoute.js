@@ -70,52 +70,74 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
 router.post("/cloudinary", verifyTokenAndAuthorization, async (req, res) => {
 
   const { car_name, desc, image, model_name, model_year, color, price } = req.body;
-  if (!car_name)
-    return res.status(401).json({ msg: "Car Name Field is Empty" });
-
+  if (!car_name) return res.status(401).json({ msg: "Car Name Field is Empty" });
   if (!desc) return res.status(401).json({ msg: "Desc Field is Empty" })
-
   if (!model_name) return res.status(401).json({ msg: "Model Name Field is Empty" })
-
   if (!model_year) return res.status(401).json({ msg: "Model Year Field is Empty" })
-
   if (!color) return res.status(401).json({ msg: "Color Field is Empty" })
-
   if (!price) return res.status(401).json({ msg: "Price Field is Empty" })
-
-
   const user = req.user;
 
-     cloudinary.uploader.upload(image, {
-        upload_preset: "car_mart",
-        allowed_formats : ['png', 'jpg', 'svg', 'ico', 'jfif', 'web']
-      }).then((result) =>{
-        const savedCar = Car.create({
-          userId: user.id,
-          car_name,
-          desc,
-          model_name,
-          model_year,
-          color,
-          price,
-          image: result.url
-        })
+  try{
+     const datas = await cloudinary.uploader.upload(image, {
+      upload_preset: "car_mart",
+      allowed_formats : ['png', 'jpg', 'svg', 'ico', 'jfif', 'web']
+     });
+     if(image){
+       const car = new Car({
+             userId: user.id,
+             car_name,
+             desc,
+             model_name,
+             model_year,
+             color,
+             price,
+             image: datas.url
+       });
+       const savedCar = await car.save();
+         return res.status(200).json({
+           status: {
+             code: 100,
+             msg: "Car Posted Created Successfully"
+           },
+           data: savedCar,
+         })
+     }
+  }catch(err){
+    return res.status(500).json({ msg: err });
 
-        return res.status(200).json({
-          status: {
-            code: 100,
-            msg: "Car Posted Created Successfully"
-          },
-          // data: result.url,
-        })
+  }
 
-      }).catch((error) => {
-        res.status(500).send({
-          message:"failed",
-          error
-        })
-      })
-
+      //  cloudinary.uploader.upload(image, {
+      //   upload_preset: "car_mart",
+      //   allowed_formats : ['png', 'jpg', 'svg', 'ico', 'jfif', 'web']
+      // }).then((result) =>{
+      //   const savedCar =  Car.create({
+      //     userId: user.id,
+      //     car_name,
+      //     desc,
+      //     model_name,
+      //     model_year,
+      //     color,
+      //     price,
+      //     image: result.url
+      //   });
+      //
+      //   return res.status(200).json({
+      //     status: {
+      //       code: 100,
+      //       msg: "Car Posted Created Successfully"
+      //     },
+      //     data: savedCar,
+      //   })
+      //
+      // }).catch((error) => {
+      //   res.status(500).send({
+      //     message:"failed",
+      //     error
+      //   })
+      // })
+      //
 
 })
 
