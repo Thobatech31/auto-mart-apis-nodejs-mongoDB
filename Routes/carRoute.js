@@ -106,7 +106,7 @@ router.post("/cloudinary", verifyTokenAndAuthorization, async (req, res) => {
             code: 100,
             msg: "Car Posted Created Successfully"
           },
-          data: result.url,
+          // data: result.url,
         })
 
       }).catch((error) => {
