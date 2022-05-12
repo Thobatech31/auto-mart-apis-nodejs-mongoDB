@@ -14,13 +14,10 @@ dotenv.config();
 //REGISTER WITH EMAIL VERIFICATION
 router.post("/register", async (req, res) => {
     const { username, email, mobile, first_name, last_name, address } = req.body;
-
     //Check If Username Field Empty
     if (!username) return res.status(401).json({ msg: "Username Field is Empty" })
-
     //Check If Email address Field Empty
     if (!email) return res.status(401).json({ msg: "Email Field is Empty" })
-
     //Check If Mobile Field Empty
     if (!mobile) return res.status(401).json({ msg: "Mobile Field is Empty" })
 
