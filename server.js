@@ -8,9 +8,7 @@ const cors = require('cors');
 const userRoute = require('./Routes/userRoute');
 const carRoute = require('./Routes/carRoute');
 
-
 dotenv.config();
-
 
 //Middlewares
 app.use(cors());
@@ -27,7 +25,7 @@ mongoose.connect(process.env.MONGO_URL, {
   .catch((err) => console.log(err));
 
 
-// //Routes Middleware
+ //Routes Middleware
 app.use('/api/users', userRoute);
 app.use('/api/cars', carRoute);
 
