@@ -159,44 +159,6 @@ router.put("/change-password", verifyTokenUser, async (req, res) => {
         });
 
     }
-
-    // if(user){
-    //     bcrypt.compare(oldPassword, user.password, (err, isMatch) =>{
-    //         if(err){
-    //             return res.status(401).json({ msg: "server Error" });
-    //         }else if(isMatch){
-    //             if (newPassword == confirmPassword) {
-    //                 bcrypt.hash(newPassword, 10, async (err, hash) => {
-    //                     if (err) {
-    //                         return res.status(401).json({
-    //                             msg: "Error Cannot Encrypt Password",
-    //                             error: err
-    //                         })
-    //                     }
-    //                     user.password = hash;
-    //                     const UpdatePass = await User.findByIdAndUpdate(user._id, {
-    //                         password: hash
-    //                     }, { new: true });
-    //                     const { password, ...others } = UpdatePass._doc
-    //                     return res.status(200).json({
-    //                         status: {
-    //                             code: 100,
-    //                             msg: "Password Updated Succesfully"
-    //                         },
-    //                         data: { ...others }
-    //                     })
-    //                 })
-    //             }else{
-    //                 return res.status(500).json({ msg: "new Password and Confirm Password does not Match" });
-
-    //             }
-    //         }else{
-    //             return res.status(401).json({
-    //                 msg: "Old password not correct",
-    //             })
-    //         }
-    //     })
-    // }
 })
 
 
