@@ -14,6 +14,7 @@ dotenv.config();
 //REGISTER WITH EMAIL VERIFICATION
 router.post("/register", async (req, res) => {
     const { username, email, mobile, first_name, last_name, address } = req.body;
+    console.log(req.body)
     //Check If Username Field Empty
     if (!username) return res.status(401).json({ msg: "Username Field is Empty" })
     //Check If Email address Field Empty
@@ -75,7 +76,7 @@ router.post("/register", async (req, res) => {
 //LOGIN USER
 router.post("/login", async (req, res) => {
     const { username } = req.body;
-
+console.log(req.body)
     //Check If Username Field Empty
     if (!username) return res.status(401).json({ msg: "Username Field is Empty" })
 
@@ -92,7 +93,6 @@ router.post("/login", async (req, res) => {
             id: user._id,
             username: user.username,
             email: user.email,
-            isAdmin: user.isAdmin,
         },
             process.env.TOKEN_SECRET_KEY,
             { expiresIn: "3d" },
