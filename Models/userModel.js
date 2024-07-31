@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const UserSchema = new mongoose.Schema(
     {
@@ -38,6 +40,9 @@ const UserSchema = new mongoose.Schema(
           type: String,
           default: 0,
         },
+        passwordChangeAt: Date,
+        passwordResetToken: String,
+        passwordResetExpires: Date,
     },
     {timestamps : true}
 );
@@ -59,6 +64,17 @@ UserSchema.statics.checkMobileAlreadyExist = async (mobile) => {
   if (mobileExists)
     return mobileExists
 }
+
+//Pssword reset token
+UserSchema.statics.createPasswordResetToken = async function () {
+  const resettoken = crypto.randomBytes(32).toString("hex");
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resettoken)
+    .digest("hex");
+  this.passwordResetExpires = Date.now() + 30 * 60 * 1000; // 10 times
+  return resettoken;
+};
 
 
 // module.exports = mongoose.model("User", UserSchema);

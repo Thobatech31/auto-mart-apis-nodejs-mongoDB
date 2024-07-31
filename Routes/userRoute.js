@@ -267,4 +267,66 @@ router.post("/uploadchurchlogo/:id", verifyTokenAndAdmin, async (req, res) => {
   });
 });
 
+//FORGOTEN PASSWORD
+router.post("/forgoten-password", async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found with this email",
+    });
+  }
+
+  try {
+    // Call createPasswordResetToken on the User model
+    const token = await User.createPasswordResetToken();
+    user.passwordResetToken = token;
+    user.passwordResetExpires = Date.now() + 30 * 60 * 1000; // 30 minutes
+    await user.save();
+
+    const mailData = {
+      to: email,
+      text: "Hey User",
+      subject: "Forgot Password Link",
+      htm: fogotPasswordEmailMessage(process.env.STAGING_URL, token),
+    };
+
+    sendMail(mailData);
+
+    res.status(200).json({
+      success: true,
+      message: "Forgot link has been sent to your Email successfully",
+      token: token,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+  router.put("/complete-reset-password/:token", async (req, res) => {
+  const { password } = req.body;
+  const { token } = req.params;
+  
+
+  const user = await User.findOne({
+    passwordResetToken: token,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  // console.log("User:", user);
+
+  if (!user) {
+    // console.log("Token Expired or User not found");
+    throw new Error("Token Expired, please try again later");
+  }
+
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+  res.json(user);
+});
+
 module.exports = router;
