@@ -12,6 +12,10 @@ const {
   verifyTokenAndAdmin,
   verifyToken,
 } = require("../Authentication/verifyToken");
+const {
+  fogotPasswordEmailMessage,
+} = require("../email_templates/fogotPasswordEmail");
+const sendMail = require("../controller/emailController");
 
 dotenv.config();
 
@@ -36,7 +40,7 @@ router.post("/register", async (req, res) => {
 
   //Check If church_address Field Empty
   if (!address)
-    return res.status(401).json({ msg: "Church Address Field is Empty" });
+    return res.status(401).json({ msg: "Address Field is Empty" });
 
   //Check If Password Field Empty
   if (!req.body.password)
@@ -190,6 +194,7 @@ router.put("/change-password", verifyTokenUser, async (req, res) => {
     });
   }
 
+
   // if(user){
   //     bcrypt.compare(oldPassword, user.password, (err, isMatch) =>{
   //         if(err){
@@ -267,6 +272,7 @@ router.post("/uploadchurchlogo/:id", verifyTokenAndAdmin, async (req, res) => {
   });
 });
 
+
 //FORGOTEN PASSWORD
 router.post("/forgoten-password", async (req, res) => {
   const { email } = req.body;
@@ -275,7 +281,7 @@ router.post("/forgoten-password", async (req, res) => {
   if (!user) {
     return res.status(404).json({
       success: false,
-      message: "User not found with this email",
+      message: "User not found with this email.",
     });
   }
 
@@ -309,24 +315,21 @@ router.post("/forgoten-password", async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
   
-
   const user = await User.findOne({
     passwordResetToken: token,
     passwordResetExpires: { $gt: Date.now() },
   });
-
   // console.log("User:", user);
-
   if (!user) {
     // console.log("Token Expired or User not found");
     throw new Error("Token Expired, please try again later");
   }
-
   user.password = password;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   await user.save();
   res.json(user);
 });
+
 
 module.exports = router;
