@@ -314,7 +314,6 @@ router.post("/forgoten-password", async (req, res) => {
   router.put("/complete-reset-password/:token", async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
-  
   const user = await User.findOne({
     passwordResetToken: token,
     passwordResetExpires: { $gt: Date.now() },
@@ -324,7 +323,10 @@ router.post("/forgoten-password", async (req, res) => {
     // console.log("Token Expired or User not found");
     throw new Error("Token Expired, please try again later");
   }
-  user.password = password;
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(password, salt);
+  
+  user.password = hashPassword;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   await user.save();
