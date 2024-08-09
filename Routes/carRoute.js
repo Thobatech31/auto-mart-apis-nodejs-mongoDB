@@ -161,6 +161,17 @@ router.put("/:id", verifyTokenUser, async (req, res) => {
   }
 })
 
+// const array = [1,2,3,4,5,6,7,8,9,10];
+// let countNumObj = {};
+// for(let number of array){
+//   if(countNumObj[number]){
+//     countNumObj[number]++;
+//   }else{
+//     countNumObj[number] = 1;
+//   }
+// }
+// console.log(countNumObj);
+
 
 //Delete Car
 router.delete("/:id", verifyTokenUser, async (req, res) => {

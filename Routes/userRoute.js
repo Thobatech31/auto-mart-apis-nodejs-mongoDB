@@ -6,6 +6,7 @@ const request = require("request");
 const _ = require("lodash");
 const { result } = require("lodash");
 const dotenv = require("dotenv");
+const Enrollee = require("../Models/enrolleeModel")
 const {
   verifyTokenAndAuthorization,
   verifyTokenUser,
@@ -16,7 +17,6 @@ const {
   fogotPasswordEmailMessage,
 } = require("../email_templates/fogotPasswordEmail");
 const sendMail = require("../controller/emailController");
-
 dotenv.config();
 
 //REGISTER WITH EMAIL VERIFICATION
@@ -311,21 +311,20 @@ router.post("/forgoten-password", async (req, res) => {
   }
 });
 
-  router.put("/complete-reset-password/:token", async (req, res) => {
+router.put("/complete-reset-password/:token", async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
   const user = await User.findOne({
     passwordResetToken: token,
     passwordResetExpires: { $gt: Date.now() },
   });
-  // console.log("User:", user);
   if (!user) {
     // console.log("Token Expired or User not found");
     throw new Error("Token Expired, please try again later");
   }
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
-  
+
   user.password = hashPassword;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
@@ -333,5 +332,61 @@ router.post("/forgoten-password", async (req, res) => {
   res.json(user);
 });
 
+
+router.post('/create', async (req, res) => {
+  const { first_name, last_name, email, enrollee_id, profile_picture } = req.body
+
+  if (!first_name || !last_name || !email || !enrollee_id || !profile_picture) return res.status(405).json({ "message": "all required" })
+
+  try {
+    console.log(first_name, last_name, email, enrollee_id)
+    const newEnrollee = await Enrollee.create({ first_name, last_name, email, enrollee_id, profile_picture })
+    console.log(newEnrollee)
+    res.status(201).json({
+      "status": "200",
+      "message": "Created Succcessfully",
+      newEnrollee
+    })
+  } catch (error) {
+    res.status(401).json({
+      "status": 401,
+      "message": error.message
+    })
+  }
+
+})
+
+router.get("/all", async (req, res) => {
+  try {
+    const enrolleRecord = await Enrollee.find()
+    res.status(200).json({
+      "status": 200,
+      "message": "fetched Succesfully",
+      "data": enrolleRecord
+    })
+  } catch (error) {
+    res.status(401).json({
+      "status": 401,
+      "message": error.message
+    })
+  }
+
+})
+
+router.delete("/delete/:id", async (req, res) => {
+  const { id } = req.params
+  try {
+    const deleteEnrollee = await Enrollee.findByIdAndDelete(id)
+    res.status(401).json({
+      "status": 200,
+      "message": "Deleted Succesfully"
+    })
+  }catch(error){
+    res.status(401).json({
+      "status": 401,
+      "message": error.message
+    })
+  }
+})
 
 module.exports = router;
