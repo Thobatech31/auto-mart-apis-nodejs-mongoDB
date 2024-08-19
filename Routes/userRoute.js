@@ -357,6 +357,7 @@ router.post('/create', async (req, res) => {
 })
 
 router.get("/all", async (req, res) => {
+  // write a qurty to filter by name  
   try {
     const enrolleRecord = await Enrollee.find()
     res.status(200).json({

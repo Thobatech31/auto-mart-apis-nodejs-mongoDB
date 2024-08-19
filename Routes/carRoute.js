@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const Car = require("../Models/carModel");
-const { verifyTokenUser, verifyTokenAndAuthorization } = require("../Authentication/verifyToken");
+const { verifyToken, verifyTokenUser, verifyTokenAndAuthorization } = require("../Authentication/verifyToken");
 const multer = require('multer');
 const path = require('path');
 const cloudinary = require("../utils/cloudinary")
@@ -67,7 +67,7 @@ router.post("/", upload.single('image'), verifyTokenAndAuthorization, async (req
 
 
 //Create With Cloudinary
-router.post("/cloudinary", verifyTokenAndAuthorization, async (req, res) => {
+router.post("/cloudinary", verifyTokenUser, async (req, res) => {
 
   const { car_name, desc, image, model_name, model_year, color, price } = req.body;
   if (!car_name) return res.status(401).json({ msg: "Car Name Field is Empty" });
